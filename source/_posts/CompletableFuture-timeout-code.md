@@ -1,7 +1,20 @@
 ---
 title: CompletableFuture && ScheduledExecutorService handle timeout
+date: 2021-08-07 13:53
+categories:
+- Java
+tags:
+- 反射
+- 多线程
+- 线程池
 ---
 
+## 背景
+```
+需要实现一个接口返回多个接口方法的数据，通过请求参数反射调用接口方法，如果接口方法超时，则返回默认值。
+使用completableFuture，可以实现异步超时， jdk9，已经有原生的实现，但是在jdk8，需要自己做类似下面的实现,
+需要利用applyToEigther的特性。
+```
 
 ## Show Code
 
@@ -69,3 +82,8 @@ title: CompletableFuture && ScheduledExecutorService handle timeout
         return taskFuture.applyToEither(timeoutWatcher, Function.identity());
     }
 ```
+
+## 参考文档
+* [使用CompletableFuture](https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650)
+* [反射调用方法](https://www.liaoxuefeng.com/wiki/1252599548343744/1264803678201760)
+* [Java中使用CompletableFuture处理异步超时](https://developer.aliyun.com/article/200625)
