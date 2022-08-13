@@ -15,7 +15,6 @@ tags:
 需要实现一个接口返回多个接口方法的数据，通过请求参数反射调用接口方法，如果接口方法超时，则返回默认值。
 使用completableFuture，可以实现异步超时， jdk9已经有原生的实现，但是在jdk8需要自己做类似下面的实现, 需要利用applyToEigther的特性。
 
-
 ## Show Code
 
 ``` java
