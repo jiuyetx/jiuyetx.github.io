@@ -1,7 +1,7 @@
 ---
 title: CompletableFuture && ScheduledExecutorService handle timeout
 excerpt: 利用invoke,CompletableFuture,ScheduledExecutorService实现批处理接口，并支持超时处理
-date: 2021-08-07 13:53
+date: 2022-08-07 13:53
 categories:
 - Java
 tags:
