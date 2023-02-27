@@ -11,10 +11,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Build and Deploy
-        uses: solybum/hexo-deploy@master
+      - name: Use Node.js 12
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
+      - name: Install and Build 🔧
+        run: |
+          npm install -g hexo-cli
+          npm install
+          hexo clean
+          hexo generate
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.7.1
         env:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_REPOSITORY: jiuyetx/jiuyetx.github.io
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: main
-          PUBLISH_DIR: ./public
+          FOLDER: public
