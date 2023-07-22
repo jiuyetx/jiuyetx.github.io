@@ -4,6 +4,50 @@
   
   
   <entry>
+    <title>ConcurrentHashMap</title>
+    <link href="/2023/07/22/ConcurrentHashMap/"/>
+    <url>/2023/07/22/ConcurrentHashMap/</url>
+    
+    <content type="html"><![CDATA[<h3 id="Java集合-ConcurrentHashMap"><a href="#Java集合-ConcurrentHashMap" class="headerlink" title="Java集合 ConcurrentHashMap"></a>Java集合 <code>ConcurrentHashMap</code></h3><p><code>ConcurrentHashMap</code> 是 Java 并发包中的一个线程安全的哈希表实现，它扩展了 <code>HashMap</code> 并支持高并发环境下的并发操作。<code>ConcurrentHashMap</code> 允许多个线程同时读取和写入数据，而不需要显式地加锁。</p><h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ol><li><p><strong>分段锁</strong>：<br>在 JDK 1.7 版本及之前，<code>ConcurrentHashMap</code> 使用了分段锁（Segment）的机制，将哈希表分成多个小的段（Segment），每个段都拥有一个独立的锁。不同的线程可以同时对不同的段进行并发操作，从而提高并发性能。但是在 JDK 1.8 版本之后，已经废弃了分段锁，采用了更加高效的 CAS（Compare and Swap）和 synchronized 实现。</p></li><li><p><strong>并发度</strong>：<br><code>ConcurrentHashMap</code> 的并发度是指内部分段的个数。在 JDK 1.7 及之前，默认的并发度是 16，可以在构造函数中指定并发度。在 JDK 1.8 及之后，<code>ConcurrentHashMap</code> 不再提供构造函数指定并发度，而是采用了自动根据 CPU 核心数来设定并发度，通常是 CPU 核心数的 2 倍。</p></li><li><p><strong>无需加锁的读操作</strong>：<br><code>ConcurrentHashMap</code> 的读操作不需要加锁，多个线程可以同时进行读取，提高了并发读的效率。</p></li><li><p><strong>适用场景</strong>：<br><code>ConcurrentHashMap</code> 适用于多线程同时读写的场景，它可以在保持高并发性能的同时，提供线程安全的数据访问。</p></li></ol><p>总的来说，<code>ConcurrentHashMap</code> 是一个线程安全的哈希表实现，它在高并发环境下表现出色，并且在 JDK 1.8 及之后的版本中进行了优化，不再使用分段锁，而是采用了更加高效的并发控制机制，使其在各种场景下都能保持较好的性能表现。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Java</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>ConcurrentHashMap</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Java keyword volatile</title>
+    <link href="/2023/07/22/Java-keyword-volatile/"/>
+    <url>/2023/07/22/Java-keyword-volatile/</url>
+    
+    <content type="html"><![CDATA[<h3 id="Java关键字volatile"><a href="#Java关键字volatile" class="headerlink" title="Java关键字volatile"></a>Java关键字<code>volatile</code></h3><p><code>volatile</code> 是 Java 中用来修饰变量的关键字，它的主要作用是告诉编译器和CPU，这个变量可能会被多个线程同时访问，需要确保线程之间的可见性和顺序性。当一个变量被声明为 <code>volatile</code>，在修改该变量的值时，会立即刷新到主内存中，同时在读取该变量时，会从主内存中获取最新的值，而不是使用线程的本地缓存。</p><h3 id="问题：可见性和原子性"><a href="#问题：可见性和原子性" class="headerlink" title="问题：可见性和原子性"></a>问题：可见性和原子性</h3><p>Java 中的多线程编程涉及到多个线程访问共享数据的情况。在没有同步机制保护的情况下，线程之间可能会产生数据不一致的问题。而 <code>volatile</code> 的作用正是为了解决可见性问题，它能够保证当一个线程修改了 <code>volatile</code> 变量的值时，其他线程能够立即看到这个修改。这样，就避免了多个线程对同一个变量进行操作时，读取到的是过期数据的问题。</p><p>然而，<code>volatile</code> 并不能解决原子性问题。原子性是指一个操作是不可分割的，要么全部执行成功，要么全部失败。在 <code>volatile</code> 变量上进行复合操作（比如自增）时，并不能保证原子性。多个线程同时对同一个 <code>volatile</code> 变量进行复合操作，可能会导致结果出现错误。</p><h3 id="原因：线程的本地缓存和指令重排"><a href="#原因：线程的本地缓存和指令重排" class="headerlink" title="原因：线程的本地缓存和指令重排"></a>原因：线程的本地缓存和指令重排</h3><p>Java 中的线程在执行时，为了提高执行效率，会将变量存储在线程的本地缓存中。这就导致了一个问题：一个线程修改了一个共享变量的值，但由于其他线程使用的是本地缓存，它们可能无法立即看到修改后的值，而是使用了过期的值。</p><p>此外，为了提高程序的执行效率，JVM 和CPU 可能会对指令进行重排。在不改变单线程执行结果的前提下，JVM 和 CPU 可能会对指令的执行顺序进行优化。而这种指令重排在多线程环境下可能会导致线程读取到不正确的数据。</p><p>因此，Java 使用 <code>volatile</code> 关键字来告诉编译器和 CPU，这个变量可能会被多个线程同时访问，需要避免指令重排，并在修改变量时立即刷新到主内存，以保证线程之间的可见性和顺序性。但需要注意的是，<code>volatile</code> 并不能保证复合操作的原子性，需要结合其他同步机制来解决原子性问题。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>volatile</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Redis Cluster detail</title>
     <link href="/2023/07/22/Redis-Cluster-detail/"/>
     <url>/2023/07/22/Redis-Cluster-detail/</url>
@@ -11,6 +55,18 @@
     <content type="html"><![CDATA[<h2 id="Redis-Cluster"><a href="#Redis-Cluster" class="headerlink" title="Redis Cluster"></a>Redis Cluster</h2><p>Redis Cluster 是 Redis 分布式集群的一种实现方式，它能够在多个节点上分布和存储数据，并提供高可用性和扩展性。Redis Cluster 通过分片和数据复制来实现数据的分布和容错，确保即使在部分节点失效的情况下，整个集群仍然能够正常工作。</p><h3 id="主要特性："><a href="#主要特性：" class="headerlink" title="主要特性："></a>主要特性：</h3><ol><li><p><strong>数据分片（Sharding）</strong>：<br>Redis Cluster 将数据分成多个分片，每个分片分布在不同的节点上。这样可以有效地将数据分散到不同的服务器上，提高读写性能。</p></li><li><p><strong>高可用性</strong>：<br>Redis Cluster 使用主从复制的方式来保证数据的高可用性。每个分片都有主节点和若干个从节点，当主节点故障时，从节点会自动接替主节点的功能，确保数据的持久性和可用性。</p></li><li><p><strong>故障转移</strong>：<br>当主节点不可用时，Redis Cluster 使用自动故障转移来选择从节点中的一个作为新的主节点，确保集群在故障时能够自动恢复。</p></li><li><p><strong>动态扩展</strong>：<br>Redis Cluster 允许在运行时动态地增加或减少节点，以适应数据规模的变化。这使得集群的扩展非常容易和灵活。</p></li><li><p><strong>内置的客户端分片</strong>：<br>Redis Cluster 的客户端可以通过哈希槽来将数据分布到正确的分片上，不需要应用程序自己处理数据分片的逻辑。</p></li></ol><h3 id="配置："><a href="#配置：" class="headerlink" title="配置："></a>配置：</h3><p>配置 Redis Cluster 需要在启动 Redis 时指定不同节点的 IP 和端口，并在配置文件中设置集群模式。各个节点会自动发现彼此并建立通信。</p><h3 id="Redis-Cluster-运作原理："><a href="#Redis-Cluster-运作原理：" class="headerlink" title="Redis Cluster 运作原理："></a>Redis Cluster 运作原理：</h3><p>Redis Cluster 使用哈希槽（Hash Slot）来分布数据。整个数据空间被分成固定数量的哈希槽（默认为 16384 个），每个节点负责其中一部分哈希槽的数据。客户端将数据的键进行哈希运算，得到一个哈希槽号，然后根据哈希槽号与节点的对应关系，将数据发送到相应的节点。</p><p>通过哈希槽的分布和节点的复制，Redis Cluster 实现了数据的高可用性和分布式存储。当集群中的某个节点出现故障时，集群会自动进行故障转移，将失效节点的哈希槽重新分配到其他节点上，从而保持数据的完整性和可用性。</p><p>总的来说，Redis Cluster 提供了一个稳定、高可用和可扩展的分布式 Redis 解决方案，适用于大规模的数据存储和处理场景。</p>]]></content>
     
     
+    <categories>
+      
+      <category>Redis</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>redis cluster</tag>
+      
+    </tags>
     
   </entry>
   

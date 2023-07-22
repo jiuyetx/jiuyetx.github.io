@@ -16,24 +16,22 @@
   <meta name="author" content="jiuyetx">
   <meta name="keywords" content="">
   
-    <meta name="description" content="背景修复工单，本地调试OK，初步排查是线上版本部署代码不是最新的，登录docker后，找到jar文件并解压得到class文件 Show Code123wget https:&#x2F;&#x2F;www.benf.org&#x2F;other&#x2F;cfr&#x2F;cfr-0.144.jarjava -jar cfr-0.144.jar your_class.class &gt; out.java">
+    <meta name="description" content="Java集合 ConcurrentHashMapConcurrentHashMap 是 Java 并发包中的一个线程安全的哈希表实现，它扩展了 HashMap 并支持高并发环境下的并发操作。ConcurrentHashMap 允许多个线程同时读取和写入数据，而不需要显式地加锁。 特点 分段锁：在 JDK 1.7 版本及之前，ConcurrentHashMap 使用了分段锁（Segment）的机制，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="use jad in Linux">
-<meta property="og:url" content="https://jiuyetx.github.io/2023/02/27/how-to-use-jad/index.html">
+<meta property="og:title" content="ConcurrentHashMap">
+<meta property="og:url" content="https://jiuyetx.github.io/2023/07/22/ConcurrentHashMap/index.html">
 <meta property="og:site_name" content="jiuyetx">
-<meta property="og:description" content="背景修复工单，本地调试OK，初步排查是线上版本部署代码不是最新的，登录docker后，找到jar文件并解压得到class文件 Show Code123wget https:&#x2F;&#x2F;www.benf.org&#x2F;other&#x2F;cfr&#x2F;cfr-0.144.jarjava -jar cfr-0.144.jar your_class.class &gt; out.java">
+<meta property="og:description" content="Java集合 ConcurrentHashMapConcurrentHashMap 是 Java 并发包中的一个线程安全的哈希表实现，它扩展了 HashMap 并支持高并发环境下的并发操作。ConcurrentHashMap 允许多个线程同时读取和写入数据，而不需要显式地加锁。 特点 分段锁：在 JDK 1.7 版本及之前，ConcurrentHashMap 使用了分段锁（Segment）的机制，">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-02-27T19:07:00.000Z">
-<meta property="article:modified_time" content="2023-07-22T09:38:36.885Z">
+<meta property="article:published_time" content="2023-07-22T17:34:58.000Z">
+<meta property="article:modified_time" content="2023-07-22T09:38:36.881Z">
 <meta property="article:author" content="jiuyetx">
-<meta property="article:tag" content="Linux">
-<meta property="article:tag" content="jad">
-<meta property="article:tag" content="反编译">
+<meta property="article:tag" content="ConcurrentHashMap">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>use jad in Linux - jiuyetx</title>
+  <title>ConcurrentHashMap - jiuyetx</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="use jad in Linux"></span>
+            <span id="subtitle" data-typed-text="ConcurrentHashMap"></span>
           
         </div>
 
@@ -209,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-02-27 19:07" pubdate>
-          2023年2月27日 晚上
+        <time datetime="2023-07-22 17:34" pubdate>
+          2023年7月22日 下午
         </time>
       </span>
     
@@ -221,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          170 字
+          702 字
         
       </span>
     
@@ -232,7 +230,7 @@
         
         
         
-          2 分钟
+          6 分钟
         
       </span>
     
@@ -270,13 +268,23 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">use jad in Linux</h1>
+            <h1 style="display: none">ConcurrentHashMap</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>修复工单，本地调试OK，初步排查是线上版本部署代码不是最新的，登录docker后，找到jar文件并解压得到class文件</p>
-<h2 id="Show-Code"><a href="#Show-Code" class="headerlink" title="Show Code"></a>Show Code</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">wget https://www.benf.org/other/cfr/cfr-0.144.jar<br><br>java -jar cfr-0.144.jar your_class.class &gt; out.java<br></code></pre></td></tr></table></figure>
+                <h3 id="Java集合-ConcurrentHashMap"><a href="#Java集合-ConcurrentHashMap" class="headerlink" title="Java集合 ConcurrentHashMap"></a>Java集合 <code>ConcurrentHashMap</code></h3><p><code>ConcurrentHashMap</code> 是 Java 并发包中的一个线程安全的哈希表实现，它扩展了 <code>HashMap</code> 并支持高并发环境下的并发操作。<code>ConcurrentHashMap</code> 允许多个线程同时读取和写入数据，而不需要显式地加锁。</p>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ol>
+<li><p><strong>分段锁</strong>：<br>在 JDK 1.7 版本及之前，<code>ConcurrentHashMap</code> 使用了分段锁（Segment）的机制，将哈希表分成多个小的段（Segment），每个段都拥有一个独立的锁。不同的线程可以同时对不同的段进行并发操作，从而提高并发性能。但是在 JDK 1.8 版本之后，已经废弃了分段锁，采用了更加高效的 CAS（Compare and Swap）和 synchronized 实现。</p>
+</li>
+<li><p><strong>并发度</strong>：<br><code>ConcurrentHashMap</code> 的并发度是指内部分段的个数。在 JDK 1.7 及之前，默认的并发度是 16，可以在构造函数中指定并发度。在 JDK 1.8 及之后，<code>ConcurrentHashMap</code> 不再提供构造函数指定并发度，而是采用了自动根据 CPU 核心数来设定并发度，通常是 CPU 核心数的 2 倍。</p>
+</li>
+<li><p><strong>无需加锁的读操作</strong>：<br><code>ConcurrentHashMap</code> 的读操作不需要加锁，多个线程可以同时进行读取，提高了并发读的效率。</p>
+</li>
+<li><p><strong>适用场景</strong>：<br><code>ConcurrentHashMap</code> 适用于多线程同时读写的场景，它可以在保持高并发性能的同时，提供线程安全的数据访问。</p>
+</li>
+</ol>
+<p>总的来说，<code>ConcurrentHashMap</code> 是一个线程安全的哈希表实现，它在高并发环境下表现出色，并且在 JDK 1.8 及之后的版本中进行了优化，不再使用分段锁，而是采用了更加高效的并发控制机制，使其在各种场景下都能保持较好的性能表现。</p>
 
                 
               </div>
@@ -310,11 +318,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Linux/">#Linux</a>
-      
-        <a href="/tags/jad/">#jad</a>
-      
-        <a href="/tags/%E5%8F%8D%E7%BC%96%E8%AF%91/">#反编译</a>
+        <a href="/tags/ConcurrentHashMap/">#ConcurrentHashMap</a>
       
     </div>
   
@@ -326,8 +330,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>use jad in Linux</div>
-      <div>https://jiuyetx.github.io/2023/02/27/how-to-use-jad/</div>
+      <div>ConcurrentHashMap</div>
+      <div>https://jiuyetx.github.io/2023/07/22/ConcurrentHashMap/</div>
     </div>
     <div class="license-meta">
       
@@ -339,7 +343,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年2月27日</div>
+          <div>2023年7月22日</div>
         </div>
       
       
@@ -369,18 +373,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/07/22/Dubbo-Knowledge-points/" title="Dubbo Knowledge points">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Dubbo Knowledge points</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/08/07/CompletableFuture-timeout-code/" title="CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout">
-                        <span class="hidden-mobile">CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout</span>
+                      <a href="/2023/07/22/Java-keyword-volatile/" title="Java keyword volatile">
+                        <span class="hidden-mobile">Java keyword volatile</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
