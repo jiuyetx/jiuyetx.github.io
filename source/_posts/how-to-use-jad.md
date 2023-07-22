@@ -1,5 +1,5 @@
 ---
-title: class file jad in Linux
+title: use jad in Linux
 date: 2023-02-27 19:07
 categories:
 - Java
