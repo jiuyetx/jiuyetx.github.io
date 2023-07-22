@@ -4,6 +4,60 @@
   
   
   <entry>
+    <title>class file jad in Linux</title>
+    <link href="/2023/07/22/Dubbo-Knowledge-points/"/>
+    <url>/2023/07/22/Dubbo-Knowledge-points/</url>
+    
+    <content type="html"><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Dubbo知识点整理</p><h2 id="Dubbo-知识点"><a href="#Dubbo-知识点" class="headerlink" title="Dubbo 知识点"></a>Dubbo 知识点</h2><p>Dubbo是一款高性能的分布式服务框架，由阿里巴巴开源，用于解决分布式系统中的服务治理问题。下面是Dubbo的一些重要知识点：</p><h3 id="1-Dubbo-简介"><a href="#1-Dubbo-简介" class="headerlink" title="1. Dubbo 简介"></a>1. Dubbo 简介</h3><p>Dubbo是一款开源的高性能、轻量级的分布式服务框架，它提供了服务注册、发现、远程调用、负载均衡等分布式服务治理功能，使得分布式系统开发更加简单和高效。</p><h3 id="2-Dubbo-核心概念"><a href="#2-Dubbo-核心概念" class="headerlink" title="2. Dubbo 核心概念"></a>2. Dubbo 核心概念</h3><ul><li>服务提供者(Provider)：暴露服务的服务提供方。</li><li>服务消费者(Consumer)：调用远程服务的服务消费方。</li><li>注册中心(Registry)：用于服务的注册与发现，Dubbo支持多种注册中心，如ZooKeeper、Consul等。</li><li>监控中心(Monitor)：用于统计服务的调用次数和调用时间等。</li><li>服务容器(Container)：服务运行容器，负责启动、加载、运行服务提供者。</li></ul><h3 id="3-Dubbo-服务暴露与引用"><a href="#3-Dubbo-服务暴露与引用" class="headerlink" title="3. Dubbo 服务暴露与引用"></a>3. Dubbo 服务暴露与引用</h3><ul><li>服务暴露：通过<code>@Service</code>注解将服务接口实现类暴露为Dubbo服务，并配置服务的协议、注册中心等信息。</li><li>服务引用：通过<code>@Reference</code>注解或配置XML来引用远程服务，获取对服务接口的代理对象，从而进行远程调用。</li></ul><h3 id="4-Dubbo-配置"><a href="#4-Dubbo-配置" class="headerlink" title="4. Dubbo 配置"></a>4. Dubbo 配置</h3><p>Dubbo提供了丰富的配置选项，可以通过XML配置文件或注解进行配置，包括服务提供者和服务消费者的配置，以及注册中心、协议、负载均衡等配置。</p><h3 id="5-Dubbo-负载均衡"><a href="#5-Dubbo-负载均衡" class="headerlink" title="5. Dubbo 负载均衡"></a>5. Dubbo 负载均衡</h3><p>Dubbo支持多种负载均衡策略，用于决定服务消费者选择哪个服务提供者进行远程调用。常见的负载均衡策略有：随机(Random)、轮询(RoundRobin)、最少活跃调用数(LeastActive)等。</p><h3 id="6-Dubbo-集群容错"><a href="#6-Dubbo-集群容错" class="headerlink" title="6. Dubbo 集群容错"></a>6. Dubbo 集群容错</h3><p>Dubbo提供了集群容错机制，用于处理服务调用时可能出现的失败情况，如服务提供者不可用、调用超时等。常见的集群容错策略有：失败自动切换(Failover)、失败快速失败(Failfast)、失败安全(Failsafe)等。</p><h3 id="7-Dubbo-过滤器"><a href="#7-Dubbo-过滤器" class="headerlink" title="7. Dubbo 过滤器"></a>7. Dubbo 过滤器</h3><p>Dubbo提供了过滤器机制，可以在服务提供者和服务消费者之间进行过滤器链的调用，用于实现日志记录、安全认证、参数验证等功能。</p><h3 id="8-Dubbo-异步调用"><a href="#8-Dubbo-异步调用" class="headerlink" title="8. Dubbo 异步调用"></a>8. Dubbo 异步调用</h3><p>Dubbo支持异步调用方式，可以在服务消费者发起调用后继续执行其他逻辑，待服务提供者处理完毕后再获取结果。</p><h3 id="9-Dubbo-SPI"><a href="#9-Dubbo-SPI" class="headerlink" title="9. Dubbo SPI"></a>9. Dubbo SPI</h3><p>Dubbo使用SPI（Service Provider Interface）机制来加载扩展点实现，可以通过SPI扩展机制自定义一些组件的实现。</p><p>以上是Dubbo的一些核心知识点，当准备面试Java时，对于Dubbo的了解将对面试中的分布式系统和服务治理相关问题有很大帮助。希望这些知识点对您的面试有所帮助。祝您面试成功！</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Dubbo</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Dubbo</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>class file jad in Linux</title>
+    <link href="/2023/02/27/how-to-use-jad/"/>
+    <url>/2023/02/27/how-to-use-jad/</url>
+    
+    <content type="html"><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>修复工单，本地调试OK，初步排查是线上版本部署代码不是最新的，登录docker后，找到jar文件并解压得到class文件</p><h2 id="Show-Code"><a href="#Show-Code" class="headerlink" title="Show Code"></a>Show Code</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">wget https://www.benf.org/other/cfr/cfr-0.144.jar<br><br>java -jar cfr-0.144.jar your_class.class &gt; out.java<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Java</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Linux</tag>
+      
+      <tag>jad</tag>
+      
+      <tag>反编译</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout</title>
     <link href="/2022/08/07/CompletableFuture-timeout-code/"/>
     <url>/2022/08/07/CompletableFuture-timeout-code/</url>
@@ -24,7 +78,7 @@
       
       <tag>多线程</tag>
       
-      <tag>线程池</tag>
+      <tag>线程池hexo</tag>
       
     </tags>
     

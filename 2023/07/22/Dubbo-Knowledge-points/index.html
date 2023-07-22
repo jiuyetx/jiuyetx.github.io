@@ -16,24 +16,22 @@
   <meta name="author" content="jiuyetx">
   <meta name="keywords" content="">
   
-    <meta name="description" content="利用invoke,CompletableFuture,ScheduledExecutorService实现批处理接口，并支持超时处理">
+    <meta name="description" content="背景Dubbo知识点整理 Dubbo 知识点Dubbo是一款高性能的分布式服务框架，由阿里巴巴开源，用于解决分布式系统中的服务治理问题。下面是Dubbo的一些重要知识点： 1. Dubbo 简介Dubbo是一款开源的高性能、轻量级的分布式服务框架，它提供了服务注册、发现、远程调用、负载均衡等分布式服务治理功能，使得分布式系统开发更加简单和高效。 2. Dubbo 核心概念 服务提供者(Provid">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout">
-<meta property="og:url" content="https://jiuyetx.github.io/2022/08/07/CompletableFuture-timeout-code/index.html">
+<meta property="og:title" content="class file jad in Linux">
+<meta property="og:url" content="https://jiuyetx.github.io/2023/07/22/Dubbo-Knowledge-points/index.html">
 <meta property="og:site_name" content="jiuyetx">
-<meta property="og:description" content="利用invoke,CompletableFuture,ScheduledExecutorService实现批处理接口，并支持超时处理">
+<meta property="og:description" content="背景Dubbo知识点整理 Dubbo 知识点Dubbo是一款高性能的分布式服务框架，由阿里巴巴开源，用于解决分布式系统中的服务治理问题。下面是Dubbo的一些重要知识点： 1. Dubbo 简介Dubbo是一款开源的高性能、轻量级的分布式服务框架，它提供了服务注册、发现、远程调用、负载均衡等分布式服务治理功能，使得分布式系统开发更加简单和高效。 2. Dubbo 核心概念 服务提供者(Provid">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-08-07T13:53:00.000Z">
+<meta property="article:published_time" content="2023-07-22T15:27:00.000Z">
 <meta property="article:modified_time" content="2023-07-22T08:21:36.490Z">
 <meta property="article:author" content="jiuyetx">
-<meta property="article:tag" content="反射">
-<meta property="article:tag" content="多线程">
-<meta property="article:tag" content="线程池hexo">
+<meta property="article:tag" content="Dubbo">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout - jiuyetx</title>
+  <title>class file jad in Linux - jiuyetx</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout"></span>
+            <span id="subtitle" data-typed-text="class file jad in Linux"></span>
           
         </div>
 
@@ -209,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-08-07 13:53" pubdate>
-          2022年8月7日 下午
+        <time datetime="2023-07-22 15:27" pubdate>
+          2023年7月22日 下午
         </time>
       </span>
     
@@ -221,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.2k 字
+          1.1k 字
         
       </span>
     
@@ -232,7 +230,7 @@
         
         
         
-          27 分钟
+          10 分钟
         
       </span>
     
@@ -270,19 +268,32 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout</h1>
+            <h1 style="display: none">class file jad in Linux</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>需要实现一个接口返回多个接口方法的数据，通过请求参数反射调用接口方法，如果接口方法超时，则返回默认值。<br>使用completableFuture，可以实现异步超时， jdk9已经有原生的实现，但是在jdk8需要自己做类似下面的实现, 需要利用applyToEigther的特性。</p>
-<h2 id="Show-Code"><a href="#Show-Code" class="headerlink" title="Show Code"></a>Show Code</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">ScheduledExecutorService</span> <span class="hljs-variable">scheduler</span> <span class="hljs-operator">=</span> ExecutorsManager.getInstance().getScheduledExecutorService();<br><br><span class="hljs-keyword">public</span> BatchResponeVo <span class="hljs-title function_">batch</span><span class="hljs-params">(BatchRequestDto batchRequestDto)</span> <span class="hljs-keyword">throws</span> ExecutionException, InterruptedException &#123;<br><br>    List&lt;CompletableFuture&lt;BatchResponeVo&gt;&gt; futuresList = Lists.newLinkedList();<br><br>    batchRequestDto.forEach((k, v) -&gt; &#123;<br>        <span class="hljs-type">BatchUriParamDto</span> <span class="hljs-variable">req</span> <span class="hljs-operator">=</span> JsonUtil.parseJsonUseJackson(JsonUtil.toJsonUseJackson(v), BatchUriParamDto.class);<br>        Map&lt;?, ?&gt; param = Objects.requireNonNull(req).getParam();<br>        <span class="hljs-type">String</span> <span class="hljs-variable">uri</span> <span class="hljs-operator">=</span> req.getUri();<br><br>        <span class="hljs-type">BatchServiceEnum</span> <span class="hljs-variable">serviceEnum</span> <span class="hljs-operator">=</span> BatchServiceEnum.getEnumByServiceAndMethod(uri);<br>        CompletableFuture&lt;BatchResponeVo&gt; query = CompletableFuture.supplyAsync(() -&gt; &#123;<br>            <span class="hljs-type">BatchResponeVo</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>();<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">if</span> (Objects.isNull(serviceEnum)) &#123;<br>                    result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, <span class="hljs-string">&quot;not required service method&quot;</span>, <span class="hljs-literal">null</span>));<br>                    <span class="hljs-keyword">return</span> result;<br>                &#125;<br><br>                Class&lt;?&gt; serviceClass = Class.forName(serviceEnum.getService());<br>                Class&lt;?&gt; paramClass = Class.forName(serviceEnum.getParam());<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> serviceClass.getMethod(serviceEnum.getMethod(), paramClass);<br><br>                <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> JsonUtil.parseJsonUseJackson(JsonUtil.toJsonUseJackson(param), paramClass);<br>                <span class="hljs-type">Object</span> <span class="hljs-variable">bean</span> <span class="hljs-operator">=</span> SpringUtil.getBean(serviceClass);<br>                <span class="hljs-type">Object</span> <span class="hljs-variable">invoke</span> <span class="hljs-operator">=</span> method.invoke(bean, obj);<br>                result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;ok&quot;</span>, <span class="hljs-literal">null</span>, invoke));<br>                <span class="hljs-keyword">return</span> result;<br>            &#125; <span class="hljs-keyword">catch</span> (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |<br>                     IllegalAccessException e) &#123;<br>                log.error(<span class="hljs-string">&quot;ObservabilityService batch method error msg:&#123;&#125;&quot;</span>, e.getMessage(), e);<br>                result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, e.getCause().getMessage(), <span class="hljs-literal">null</span>));<br>                <span class="hljs-keyword">return</span> result;<br>            &#125;<br>        &#125;, scheduler);<br><br>        <span class="hljs-keyword">final</span> CompletableFuture&lt;BatchResponeVo&gt; chains = within(query, Duration.ofSeconds(<span class="hljs-number">10</span>), k);<br>        futuresList.add(chains);<br>    &#125;);<br>    CompletableFuture&lt;Void&gt; allCompletableFuture = CompletableFuture.allOf(futuresList.toArray(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CompletableFuture</span>[<span class="hljs-number">0</span>]));<br><br>    <span class="hljs-type">BatchResponeVo</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>();<br>    allCompletableFuture.thenApply(v -&gt; futuresList.stream().map(CompletableFuture::join).collect(Collectors.toList()))<br>            .get()<br>            .forEach(result::putAll);<br>    <span class="hljs-keyword">return</span> result;<br>&#125;<br><br><span class="hljs-keyword">public</span> CompletableFuture&lt;BatchResponeVo&gt; <span class="hljs-title function_">failAfter</span><span class="hljs-params">(Duration duration, String key)</span>&#123;<br>    <span class="hljs-comment">/// need a schedular executor</span><br>    <span class="hljs-keyword">final</span> CompletableFuture&lt;BatchResponeVo&gt; timer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CompletableFuture</span>&lt;&gt;();<br>    scheduler.schedule(()-&gt; timer.complete(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>() &#123;&#123;<br>        put(key, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, <span class="hljs-string">&quot;method excute timeout &quot;</span>+duration.get(SECONDS)+<span class="hljs-string">&quot;s&quot;</span>, <span class="hljs-literal">null</span>));<br>    &#125;&#125;),duration.toMillis(), TimeUnit.MILLISECONDS);<br>    <span class="hljs-keyword">return</span> timer;<br>&#125;<br><br><span class="hljs-keyword">public</span> CompletableFuture&lt;BatchResponeVo&gt; <span class="hljs-title function_">within</span><span class="hljs-params">(CompletableFuture&lt;BatchResponeVo&gt; taskFuture, Duration duration, String key)</span>&#123;<br>    CompletableFuture&lt;BatchResponeVo&gt; timeoutWatcher = failAfter(duration, key);<br>    <span class="hljs-keyword">return</span> taskFuture.applyToEither(timeoutWatcher, Function.identity());<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650">使用CompletableFuture</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1264803678201760">反射调用方法</a></li>
-<li><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/200625">Java中使用CompletableFuture处理异步超时</a></li>
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Dubbo知识点整理</p>
+<h2 id="Dubbo-知识点"><a href="#Dubbo-知识点" class="headerlink" title="Dubbo 知识点"></a>Dubbo 知识点</h2><p>Dubbo是一款高性能的分布式服务框架，由阿里巴巴开源，用于解决分布式系统中的服务治理问题。下面是Dubbo的一些重要知识点：</p>
+<h3 id="1-Dubbo-简介"><a href="#1-Dubbo-简介" class="headerlink" title="1. Dubbo 简介"></a>1. Dubbo 简介</h3><p>Dubbo是一款开源的高性能、轻量级的分布式服务框架，它提供了服务注册、发现、远程调用、负载均衡等分布式服务治理功能，使得分布式系统开发更加简单和高效。</p>
+<h3 id="2-Dubbo-核心概念"><a href="#2-Dubbo-核心概念" class="headerlink" title="2. Dubbo 核心概念"></a>2. Dubbo 核心概念</h3><ul>
+<li>服务提供者(Provider)：暴露服务的服务提供方。</li>
+<li>服务消费者(Consumer)：调用远程服务的服务消费方。</li>
+<li>注册中心(Registry)：用于服务的注册与发现，Dubbo支持多种注册中心，如ZooKeeper、Consul等。</li>
+<li>监控中心(Monitor)：用于统计服务的调用次数和调用时间等。</li>
+<li>服务容器(Container)：服务运行容器，负责启动、加载、运行服务提供者。</li>
 </ul>
+<h3 id="3-Dubbo-服务暴露与引用"><a href="#3-Dubbo-服务暴露与引用" class="headerlink" title="3. Dubbo 服务暴露与引用"></a>3. Dubbo 服务暴露与引用</h3><ul>
+<li>服务暴露：通过<code>@Service</code>注解将服务接口实现类暴露为Dubbo服务，并配置服务的协议、注册中心等信息。</li>
+<li>服务引用：通过<code>@Reference</code>注解或配置XML来引用远程服务，获取对服务接口的代理对象，从而进行远程调用。</li>
+</ul>
+<h3 id="4-Dubbo-配置"><a href="#4-Dubbo-配置" class="headerlink" title="4. Dubbo 配置"></a>4. Dubbo 配置</h3><p>Dubbo提供了丰富的配置选项，可以通过XML配置文件或注解进行配置，包括服务提供者和服务消费者的配置，以及注册中心、协议、负载均衡等配置。</p>
+<h3 id="5-Dubbo-负载均衡"><a href="#5-Dubbo-负载均衡" class="headerlink" title="5. Dubbo 负载均衡"></a>5. Dubbo 负载均衡</h3><p>Dubbo支持多种负载均衡策略，用于决定服务消费者选择哪个服务提供者进行远程调用。常见的负载均衡策略有：随机(Random)、轮询(RoundRobin)、最少活跃调用数(LeastActive)等。</p>
+<h3 id="6-Dubbo-集群容错"><a href="#6-Dubbo-集群容错" class="headerlink" title="6. Dubbo 集群容错"></a>6. Dubbo 集群容错</h3><p>Dubbo提供了集群容错机制，用于处理服务调用时可能出现的失败情况，如服务提供者不可用、调用超时等。常见的集群容错策略有：失败自动切换(Failover)、失败快速失败(Failfast)、失败安全(Failsafe)等。</p>
+<h3 id="7-Dubbo-过滤器"><a href="#7-Dubbo-过滤器" class="headerlink" title="7. Dubbo 过滤器"></a>7. Dubbo 过滤器</h3><p>Dubbo提供了过滤器机制，可以在服务提供者和服务消费者之间进行过滤器链的调用，用于实现日志记录、安全认证、参数验证等功能。</p>
+<h3 id="8-Dubbo-异步调用"><a href="#8-Dubbo-异步调用" class="headerlink" title="8. Dubbo 异步调用"></a>8. Dubbo 异步调用</h3><p>Dubbo支持异步调用方式，可以在服务消费者发起调用后继续执行其他逻辑，待服务提供者处理完毕后再获取结果。</p>
+<h3 id="9-Dubbo-SPI"><a href="#9-Dubbo-SPI" class="headerlink" title="9. Dubbo SPI"></a>9. Dubbo SPI</h3><p>Dubbo使用SPI（Service Provider Interface）机制来加载扩展点实现，可以通过SPI扩展机制自定义一些组件的实现。</p>
+<p>以上是Dubbo的一些核心知识点，当准备面试Java时，对于Dubbo的了解将对面试中的分布式系统和服务治理相关问题有很大帮助。希望这些知识点对您的面试有所帮助。祝您面试成功！</p>
 
                 
               </div>
@@ -301,7 +312,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  <a href="/categories/Dubbo/" class="category-chain-item">Dubbo</a>
   
   
 
@@ -316,11 +327,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8F%8D%E5%B0%84/">#反射</a>
-      
-        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">#多线程</a>
-      
-        <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0hexo/">#线程池hexo</a>
+        <a href="/tags/Dubbo/">#Dubbo</a>
       
     </div>
   
@@ -332,8 +339,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout</div>
-      <div>https://jiuyetx.github.io/2022/08/07/CompletableFuture-timeout-code/</div>
+      <div>class file jad in Linux</div>
+      <div>https://jiuyetx.github.io/2023/07/22/Dubbo-Knowledge-points/</div>
     </div>
     <div class="license-meta">
       
@@ -345,7 +352,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年8月7日</div>
+          <div>2023年7月22日</div>
         </div>
       
       
@@ -375,15 +382,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/02/27/how-to-use-jad/" title="class file jad in Linux">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">class file jad in Linux</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2023/02/27/how-to-use-jad/" title="class file jad in Linux">
+                        <span class="hidden-mobile">class file jad in Linux</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
