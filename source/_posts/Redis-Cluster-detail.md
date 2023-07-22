@@ -1,7 +1,10 @@
 ---
 title: Redis Cluster detail
 date: 2023-07-22 17:12:01
+categories:
+- Redis
 tags:
+- redis cluster
 ---
 ## Redis Cluster
 
