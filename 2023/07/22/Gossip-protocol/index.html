@@ -16,24 +16,24 @@
   <meta name="author" content="jiuyetx">
   <meta name="keywords" content="">
   
-    <meta name="description" content="利用invoke,CompletableFuture,ScheduledExecutorService实现批处理接口，并支持超时处理">
+    <meta name="description" content="Gossip 协议是一种分布式系统中的通信协议，用于在节点之间传播信息。它是一种去中心化的通信方式，节点通过相互之间的随机通信来传播信息，从而实现数据的分发和状态的同步。Gossip 协议通常用于构建大规模的分布式系统，例如分布式数据库、分布式存储系统、对等网络等。  工作原理Gossip 协议的工作原理基于以下几个核心概念：  节点选择：在 Gossip 协议中，每个节点都会随机地选择一些其他节">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout">
-<meta property="og:url" content="https://jiuyetx.github.io/2022/08/07/CompletableFuture-timeout-code/index.html">
+<meta property="og:title" content="Gossip protocol">
+<meta property="og:url" content="https://jiuyetx.github.io/2023/07/22/Gossip-protocol/index.html">
 <meta property="og:site_name" content="jiuyetx">
-<meta property="og:description" content="利用invoke,CompletableFuture,ScheduledExecutorService实现批处理接口，并支持超时处理">
+<meta property="og:description" content="Gossip 协议是一种分布式系统中的通信协议，用于在节点之间传播信息。它是一种去中心化的通信方式，节点通过相互之间的随机通信来传播信息，从而实现数据的分发和状态的同步。Gossip 协议通常用于构建大规模的分布式系统，例如分布式数据库、分布式存储系统、对等网络等。  工作原理Gossip 协议的工作原理基于以下几个核心概念：  节点选择：在 Gossip 协议中，每个节点都会随机地选择一些其他节">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-08-07T13:53:00.000Z">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/gif/365147/1670396390434-644e27f6-88d0-48e7-94a8-a71db896bb85.gif">
+<meta property="article:published_time" content="2023-07-22T18:10:49.000Z">
 <meta property="article:modified_time" content="2023-07-22T10:16:58.966Z">
 <meta property="article:author" content="jiuyetx">
-<meta property="article:tag" content="反射">
-<meta property="article:tag" content="多线程">
-<meta property="article:tag" content="线程池">
+<meta property="article:tag" content="Gossip">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/gif/365147/1670396390434-644e27f6-88d0-48e7-94a8-a71db896bb85.gif">
   
   
   
-  <title>CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout - jiuyetx</title>
+  <title>Gossip protocol - jiuyetx</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout"></span>
+            <span id="subtitle" data-typed-text="Gossip protocol"></span>
           
         </div>
 
@@ -209,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-08-07 13:53" pubdate>
-          2022年8月7日 下午
+        <time datetime="2023-07-22 18:10" pubdate>
+          2023年7月22日 晚上
         </time>
       </span>
     
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.2k 字
+          879 字
         
       </span>
     
@@ -232,7 +232,7 @@
         
         
         
-          27 分钟
+          8 分钟
         
       </span>
     
@@ -270,19 +270,34 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout</h1>
+            <h1 style="display: none">Gossip protocol</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>需要实现一个接口返回多个接口方法的数据，通过请求参数反射调用接口方法，如果接口方法超时，则返回默认值。<br>使用completableFuture，可以实现异步超时， jdk9已经有原生的实现，但是在jdk8需要自己做类似下面的实现, 需要利用applyToEigther的特性。</p>
-<h2 id="Show-Code"><a href="#Show-Code" class="headerlink" title="Show Code"></a>Show Code</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">ScheduledExecutorService</span> <span class="hljs-variable">scheduler</span> <span class="hljs-operator">=</span> ExecutorsManager.getInstance().getScheduledExecutorService();<br><br><span class="hljs-keyword">public</span> BatchResponeVo <span class="hljs-title function_">batch</span><span class="hljs-params">(BatchRequestDto batchRequestDto)</span> <span class="hljs-keyword">throws</span> ExecutionException, InterruptedException &#123;<br><br>    List&lt;CompletableFuture&lt;BatchResponeVo&gt;&gt; futuresList = Lists.newLinkedList();<br><br>    batchRequestDto.forEach((k, v) -&gt; &#123;<br>        <span class="hljs-type">BatchUriParamDto</span> <span class="hljs-variable">req</span> <span class="hljs-operator">=</span> JsonUtil.parseJsonUseJackson(JsonUtil.toJsonUseJackson(v), BatchUriParamDto.class);<br>        Map&lt;?, ?&gt; param = Objects.requireNonNull(req).getParam();<br>        <span class="hljs-type">String</span> <span class="hljs-variable">uri</span> <span class="hljs-operator">=</span> req.getUri();<br><br>        <span class="hljs-type">BatchServiceEnum</span> <span class="hljs-variable">serviceEnum</span> <span class="hljs-operator">=</span> BatchServiceEnum.getEnumByServiceAndMethod(uri);<br>        CompletableFuture&lt;BatchResponeVo&gt; query = CompletableFuture.supplyAsync(() -&gt; &#123;<br>            <span class="hljs-type">BatchResponeVo</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>();<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">if</span> (Objects.isNull(serviceEnum)) &#123;<br>                    result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, <span class="hljs-string">&quot;not required service method&quot;</span>, <span class="hljs-literal">null</span>));<br>                    <span class="hljs-keyword">return</span> result;<br>                &#125;<br><br>                Class&lt;?&gt; serviceClass = Class.forName(serviceEnum.getService());<br>                Class&lt;?&gt; paramClass = Class.forName(serviceEnum.getParam());<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> serviceClass.getMethod(serviceEnum.getMethod(), paramClass);<br><br>                <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> JsonUtil.parseJsonUseJackson(JsonUtil.toJsonUseJackson(param), paramClass);<br>                <span class="hljs-type">Object</span> <span class="hljs-variable">bean</span> <span class="hljs-operator">=</span> SpringUtil.getBean(serviceClass);<br>                <span class="hljs-type">Object</span> <span class="hljs-variable">invoke</span> <span class="hljs-operator">=</span> method.invoke(bean, obj);<br>                result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;ok&quot;</span>, <span class="hljs-literal">null</span>, invoke));<br>                <span class="hljs-keyword">return</span> result;<br>            &#125; <span class="hljs-keyword">catch</span> (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |<br>                     IllegalAccessException e) &#123;<br>                log.error(<span class="hljs-string">&quot;ObservabilityService batch method error msg:&#123;&#125;&quot;</span>, e.getMessage(), e);<br>                result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, e.getCause().getMessage(), <span class="hljs-literal">null</span>));<br>                <span class="hljs-keyword">return</span> result;<br>            &#125;<br>        &#125;, scheduler);<br><br>        <span class="hljs-keyword">final</span> CompletableFuture&lt;BatchResponeVo&gt; chains = within(query, Duration.ofSeconds(<span class="hljs-number">10</span>), k);<br>        futuresList.add(chains);<br>    &#125;);<br>    CompletableFuture&lt;Void&gt; allCompletableFuture = CompletableFuture.allOf(futuresList.toArray(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CompletableFuture</span>[<span class="hljs-number">0</span>]));<br><br>    <span class="hljs-type">BatchResponeVo</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>();<br>    allCompletableFuture.thenApply(v -&gt; futuresList.stream().map(CompletableFuture::join).collect(Collectors.toList()))<br>            .get()<br>            .forEach(result::putAll);<br>    <span class="hljs-keyword">return</span> result;<br>&#125;<br><br><span class="hljs-keyword">public</span> CompletableFuture&lt;BatchResponeVo&gt; <span class="hljs-title function_">failAfter</span><span class="hljs-params">(Duration duration, String key)</span>&#123;<br>    <span class="hljs-comment">/// need a schedular executor</span><br>    <span class="hljs-keyword">final</span> CompletableFuture&lt;BatchResponeVo&gt; timer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CompletableFuture</span>&lt;&gt;();<br>    scheduler.schedule(()-&gt; timer.complete(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>() &#123;&#123;<br>        put(key, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, <span class="hljs-string">&quot;method excute timeout &quot;</span>+duration.get(SECONDS)+<span class="hljs-string">&quot;s&quot;</span>, <span class="hljs-literal">null</span>));<br>    &#125;&#125;),duration.toMillis(), TimeUnit.MILLISECONDS);<br>    <span class="hljs-keyword">return</span> timer;<br>&#125;<br><br><span class="hljs-keyword">public</span> CompletableFuture&lt;BatchResponeVo&gt; <span class="hljs-title function_">within</span><span class="hljs-params">(CompletableFuture&lt;BatchResponeVo&gt; taskFuture, Duration duration, String key)</span>&#123;<br>    CompletableFuture&lt;BatchResponeVo&gt; timeoutWatcher = failAfter(duration, key);<br>    <span class="hljs-keyword">return</span> taskFuture.applyToEither(timeoutWatcher, Function.identity());<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650">使用CompletableFuture</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1264803678201760">反射调用方法</a></li>
-<li><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/200625">Java中使用CompletableFuture处理异步超时</a></li>
-</ul>
+                <p>Gossip 协议是一种分布式系统中的通信协议，用于在节点之间传播信息。它是一种去中心化的通信方式，节点通过相互之间的随机通信来传播信息，从而实现数据的分发和状态的同步。Gossip 协议通常用于构建大规模的分布式系统，例如分布式数据库、分布式存储系统、对等网络等。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/gif/365147/1670396390434-644e27f6-88d0-48e7-94a8-a71db896bb85.gif" srcset="/img/loading.gif" lazyload alt="Gossip 图标"></p>
+<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>Gossip 协议的工作原理基于以下几个核心概念：</p>
+<ol>
+<li><p><strong>节点选择</strong>：<br>在 Gossip 协议中，每个节点都会随机地选择一些其他节点来进行通信。通常情况下，节点会选择一部分邻居节点来进行通信，也可以选择随机的节点。通过随机选择节点，Gossip 协议能够实现信息的广播和分发，确保信息能够迅速地在整个系统中传播。</p>
+</li>
+<li><p><strong>信息交换</strong>：<br>当两个节点进行通信时，它们会交换信息，其中包括节点本身的状态信息、数据更新、事件通知等。通过信息交换，节点能够了解其他节点的状态，并进行相应的调整和更新。</p>
+</li>
+<li><p><strong>传播和接受</strong>：<br>节点在与其他节点通信后，会将接收到的信息再次传播给其他节点，从而实现信息的广播和传播。通过不断地传播和接收信息，节点之间逐渐达成共识，保持状态的一致性。</p>
+</li>
+</ol>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>Gossip 协议具有以下特点：</p>
+<ol>
+<li><p><strong>去中心化</strong>：<br>Gossip 协议是一种去中心化的通信方式，节点之间平等地进行通信，没有中心节点的概念。每个节点都能够主动地选择和交互其他节点，实现信息的自由传播。</p>
+</li>
+<li><p><strong>高度容错</strong>：<br>Gossip 协议对节点的故障和网络分区具有很好的容错性能。即使部分节点宕机或者网络发生分区，其他节点仍然能够通过传播和接受信息来保持一致性。</p>
+</li>
+<li><p><strong>自适应性</strong>：<br>Gossip 协议能够根据节点的变化和网络环境的变化来自适应调整通信策略。节点选择和信息传播的策略可以根据实际情况动态调整，以适应系统的变化。</p>
+</li>
+<li><p><strong>高效性</strong>：<br>Gossip 协议通过随机选择节点来进行通信，避免了集中式通信和节点的全局状态信息交换，使得通信开销相对较小，能够适应大规模分布式系统。</p>
+</li>
+</ol>
+<p>总的来说，Gossip 协议是一种高效、去中心化和具有高度容错性的分布式通信协议，它在大规模分布式系统中有着广泛的应用。通过随机选择节点进行通信和信息传播，Gossip 协议能够实现节点之间的数据同步和状态一致性，保持系统的可靠性和稳定性。</p>
 
                 
               </div>
@@ -301,7 +316,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  <a href="/categories/protocol/" class="category-chain-item">protocol</a>
   
   
 
@@ -316,11 +331,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8F%8D%E5%B0%84/">#反射</a>
-      
-        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">#多线程</a>
-      
-        <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/">#线程池</a>
+        <a href="/tags/Gossip/">#Gossip</a>
       
     </div>
   
@@ -332,8 +343,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout</div>
-      <div>https://jiuyetx.github.io/2022/08/07/CompletableFuture-timeout-code/</div>
+      <div>Gossip protocol</div>
+      <div>https://jiuyetx.github.io/2023/07/22/Gossip-protocol/</div>
     </div>
     <div class="license-meta">
       
@@ -345,7 +356,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年8月7日</div>
+          <div>2023年7月22日</div>
         </div>
       
       
@@ -375,15 +386,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/02/27/how-to-use-jad/" title="use jad in Linux">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">use jad in Linux</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2023/07/22/ConcurrentHashMap/" title="ConcurrentHashMap">
+                        <span class="hidden-mobile">ConcurrentHashMap</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
