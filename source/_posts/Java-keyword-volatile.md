@@ -1,7 +1,7 @@
 ---
 title: Java keyword volatile
 date: 2023-07-22 17:28:00
-categores:
+categories:
 - Java
 tags:
 - volatile

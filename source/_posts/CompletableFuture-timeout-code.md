@@ -7,7 +7,7 @@ categories:
 tags:
 - 反射
 - 多线程
-- 线程池hexo
+- 线程池
 ---
 
 ## 背景
