@@ -1,28 +1,31 @@
-name: Deploy
+name: Deploy Hexo Blog
 
-on: [push]
+on:
+  push:
+    branches:
+      - main  # Replace 'main' with your Hexo blog's main branch name
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
 
-      - name: Setup Node.js
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14.x'  # 可以根据你的 Hexo 版本选择适当的 Node.js 版本
+        node-version: '14.x'  # Replace with the appropriate Node.js version for your Hexo setup
 
-      - name: Install dependencies
+    - name: Install dependencies
       run: npm install
 
-      - name: Build
-      run: npm run generate  # 可以根据你的 Hexo 配置使用 "hexo generate" 命令
+    - name: Build
+      run: npx hexo generate  # Use "npx hexo generate" instead of "npm run generate"
 
-      - name: Deploy
+    - name: Deploy
       run: |
         git config --global user.name "jiuyetx"
         git config --global user.email "meteor209@gmail.com"
-        hexo deploy  # 可以根据你的 Hexo 配置使用 "hexo deploy" 命令
+        npx hexo deploy  # Use "npx hexo deploy" instead of "hexo deploy"
