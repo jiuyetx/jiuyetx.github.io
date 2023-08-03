@@ -16,22 +16,22 @@
   <meta name="author" content="jiuyetx">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Redis ClusterRedis Cluster 是 Redis 分布式集群的一种实现方式，它能够在多个节点上分布和存储数据，并提供高可用性和扩展性。Redis Cluster 通过分片和数据复制来实现数据的分布和容错，确保即使在部分节点失效的情况下，整个集群仍然能够正常工作。 主要特性： 数据分片（Sharding）：Redis Cluster 将数据分成多个分片，每个分片分布在不同的节点上">
+    <meta name="description" content="【强制】业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引。  说明：不要以为唯一索引影响了insert速度，这个速度损耗可以忽略，但提高查找速度是明显的；另外，即使在应用层做了非常完善的校验控制，只要没有唯一索引，根据墨菲定律，必然有脏数据产生。  【强制】三个表以上禁止join。需要join的字段，数据类型必须绝对一致；多表关联查询时，保证被关联的字段需要有索引。  说明：即">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis Cluster detail">
-<meta property="og:url" content="https://jiuyetx.github.io/2023/07/22/Redis-Cluster-detail/index.html">
+<meta property="og:title" content="Mysql 索引规约">
+<meta property="og:url" content="https://jiuyetx.github.io/2023/08/03/mysql-index-Protocol/index.html">
 <meta property="og:site_name" content="jiuyetx">
-<meta property="og:description" content="Redis ClusterRedis Cluster 是 Redis 分布式集群的一种实现方式，它能够在多个节点上分布和存储数据，并提供高可用性和扩展性。Redis Cluster 通过分片和数据复制来实现数据的分布和容错，确保即使在部分节点失效的情况下，整个集群仍然能够正常工作。 主要特性： 数据分片（Sharding）：Redis Cluster 将数据分成多个分片，每个分片分布在不同的节点上">
+<meta property="og:description" content="【强制】业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引。  说明：不要以为唯一索引影响了insert速度，这个速度损耗可以忽略，但提高查找速度是明显的；另外，即使在应用层做了非常完善的校验控制，只要没有唯一索引，根据墨菲定律，必然有脏数据产生。  【强制】三个表以上禁止join。需要join的字段，数据类型必须绝对一致；多表关联查询时，保证被关联的字段需要有索引。  说明：即">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-07-22T17:12:01.000Z">
+<meta property="article:published_time" content="2023-08-03T15:48:02.000Z">
 <meta property="article:modified_time" content="2023-08-03T08:11:22.303Z">
 <meta property="article:author" content="jiuyetx">
-<meta property="article:tag" content="redis cluster">
+<meta property="article:tag" content="Mysql">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Redis Cluster detail - jiuyetx</title>
+  <title>Mysql 索引规约 - jiuyetx</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Redis Cluster detail"></span>
+            <span id="subtitle" data-typed-text="Mysql 索引规约"></span>
           
         </div>
 
@@ -207,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-07-22 17:12" pubdate>
-          2023年7月22日 下午
+        <time datetime="2023-08-03 15:48" pubdate>
+          2023年8月3日 下午
         </time>
       </span>
     
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          892 字
+          1.6k 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          8 分钟
+          14 分钟
         
       </span>
     
@@ -268,28 +268,59 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Redis Cluster detail</h1>
+            <h1 style="display: none">Mysql 索引规约</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="Redis-Cluster"><a href="#Redis-Cluster" class="headerlink" title="Redis Cluster"></a>Redis Cluster</h2><p>Redis Cluster 是 Redis 分布式集群的一种实现方式，它能够在多个节点上分布和存储数据，并提供高可用性和扩展性。Redis Cluster 通过分片和数据复制来实现数据的分布和容错，确保即使在部分节点失效的情况下，整个集群仍然能够正常工作。</p>
-<h3 id="主要特性："><a href="#主要特性：" class="headerlink" title="主要特性："></a>主要特性：</h3><ol>
-<li><p><strong>数据分片（Sharding）</strong>：<br>Redis Cluster 将数据分成多个分片，每个分片分布在不同的节点上。这样可以有效地将数据分散到不同的服务器上，提高读写性能。</p>
-</li>
-<li><p><strong>高可用性</strong>：<br>Redis Cluster 使用主从复制的方式来保证数据的高可用性。每个分片都有主节点和若干个从节点，当主节点故障时，从节点会自动接替主节点的功能，确保数据的持久性和可用性。</p>
-</li>
-<li><p><strong>故障转移</strong>：<br>当主节点不可用时，Redis Cluster 使用自动故障转移来选择从节点中的一个作为新的主节点，确保集群在故障时能够自动恢复。</p>
-</li>
-<li><p><strong>动态扩展</strong>：<br>Redis Cluster 允许在运行时动态地增加或减少节点，以适应数据规模的变化。这使得集群的扩展非常容易和灵活。</p>
-</li>
-<li><p><strong>内置的客户端分片</strong>：<br>Redis Cluster 的客户端可以通过哈希槽来将数据分布到正确的分片上，不需要应用程序自己处理数据分片的逻辑。</p>
-</li>
-</ol>
-<h3 id="配置："><a href="#配置：" class="headerlink" title="配置："></a>配置：</h3><p>配置 Redis Cluster 需要在启动 Redis 时指定不同节点的 IP 和端口，并在配置文件中设置集群模式。各个节点会自动发现彼此并建立通信。</p>
-<h3 id="Redis-Cluster-运作原理："><a href="#Redis-Cluster-运作原理：" class="headerlink" title="Redis Cluster 运作原理："></a>Redis Cluster 运作原理：</h3><p>Redis Cluster 使用哈希槽（Hash Slot）来分布数据。整个数据空间被分成固定数量的哈希槽（默认为 16384 个），每个节点负责其中一部分哈希槽的数据。客户端将数据的键进行哈希运算，得到一个哈希槽号，然后根据哈希槽号与节点的对应关系，将数据发送到相应的节点。</p>
-<p>通过哈希槽的分布和节点的复制，Redis Cluster 实现了数据的高可用性和分布式存储。当集群中的某个节点出现故障时，集群会自动进行故障转移，将失效节点的哈希槽重新分配到其他节点上，从而保持数据的完整性和可用性。</p>
-<p>总的来说，Redis Cluster 提供了一个稳定、高可用和可扩展的分布式 Redis 解决方案，适用于大规模的数据存储和处理场景。</p>
+                <ul>
+<li>【强制】业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引。</li>
+</ul>
+<p>说明：不要以为唯一索引影响了insert速度，这个速度损耗可以忽略，但提高查找速度是明显的；另外，即使在应用层做了非常完善的校验控制，只要没有唯一索引，根据墨菲定律，必然有脏数据产生。</p>
+<ul>
+<li>【强制】三个表以上禁止join。需要join的字段，数据类型必须绝对一致；多表关联查询时，<br>保证被关联的字段需要有索引。</li>
+</ul>
+<p>说明：即使双表join也要注意表索引、SQL性能。</p>
+<ul>
+<li>【强制】在varchar字段上建立索引时，必须指定索引长度，没必要对全字段建立索引，根据<br>实际文本区分度决定索引长度即可。</li>
+</ul>
+<p>说明：索引的长度与区分度是一对矛盾体，一般对字符串类型数据，长度为 20 的索引，区分<br>度会高达 90%以上，可以使用 count(distinct left(列名, 索引长度))&#x2F;count(*)的区分度来确定。</p>
+<ul>
+<li>【强制】页面搜索严禁左模糊或者全模糊，如果需要请走搜索引擎来解决。</li>
+</ul>
+<p>说明：索引文件具有 B-Tree 的最左前缀匹配特性，如果左边的值未确定，那么无法使用此索引。</p>
+<ul>
+<li>【推荐】如果有 order by 的场景，请注意利用索引的有序性。order by 最后的字段是组合索引的一部分，并且放在索引组合顺序的最后，避免出现 file_sort 的情况，影响查询性能。</li>
+</ul>
+<p>正例：where a&#x3D;? and b&#x3D;? order by c; 索引：a_b_c</p>
+<p>反例：索引中有范围查找，那么索引有序性无法利用，如：WHERE a&gt;10 ORDER BY b; 索引a_b 无法排序。</p>
+<ul>
+<li>【推荐】利用覆盖索引来进行查询操作，避免回表。</li>
+</ul>
+<p>说明：如果一本书需要知道第 11 章是什么标题，会翻开第 11 章对应的那一页吗？目录浏览<br>一下就好，这个目录就是起到覆盖索引的作用。</p>
+<p>正例：能够建立索引的种类分为主键索引、唯一索引、普通索引三种，而覆盖索引只是一种查<br>询的一种效果，用 explain 的结果，extra 列会出现：using index。 </p>
+<ul>
+<li>【推荐】利用延迟关联或者子查询优化超多分页场景。</li>
+</ul>
+<p>说明：MySQL 并不是跳过 offset 行，而是取 offset+N 行，然后返回放弃前 offset 行，返回N 行，那当 offset 特别大的时候，效率就非常的低下，要么控制返回的总页数，要么对超过特定阈值的页数进行 SQL 改写。</p>
+<p>正例：先快速定位需要获取的 id 段，然后再关联：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> a.<span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> 表 <span class="hljs-number">1</span> a, (<span class="hljs-keyword">select</span> id <span class="hljs-keyword">from</span> 表 <span class="hljs-number">1</span> <span class="hljs-keyword">where</span> 条件 LIMIT <span class="hljs-number">100000</span>,<span class="hljs-number">20</span> ) b <span class="hljs-keyword">where</span> a.id<span class="hljs-operator">=</span>b.id<br></code></pre></td></tr></table></figure>
+<ul>
+<li>【推荐】SQL 性能优化的目标：至少要达到 range 级别，要求是 ref 级别，如果可以是 consts最好。</li>
+</ul>
+<p>说明：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-number">1</span>）consts 单表中最多只有一个匹配行（主键或者唯一索引），在优化阶段即可读取到数据。<br><span class="hljs-number">2</span>）<span class="hljs-keyword">ref</span> 指的是使用普通的索引（normal <span class="hljs-keyword">index</span>）。<br><span class="hljs-number">3</span>）range 对索引进行范围检索。<br></code></pre></td></tr></table></figure>
+
+<p>反例：explain 表的结果，type&#x3D;index，索引物理文件全扫描，速度非常慢，这个 index 级<br>别比较 range 还低，与全表扫描是小巫见大巫。</p>
+<ul>
+<li>【推荐】建组合索引的时候，区分度最高的在最左边</li>
+</ul>
+<p>正例：如果 where a&#x3D;? and b&#x3D;? ，如果 a 列的几乎接近于唯一值，那么只需要单建 idx_a索引即可。</p>
+<p>说明：存在非等号和等号混合时，在建索引时，请把等号条件的列前置。如：where c&gt;? and<br>d&#x3D;? 那么即使 c 的区分度更高，也必须把 d 放在索引的最前列，即索引 idx_d_c。</p>
+<ul>
+<li>【推荐】防止因字段类型不同造成的隐式转换，导致索引失效。</li>
+<li>【参考】创建索引时避免有如下极端误解<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs">1）宁滥勿缺。认为一个查询就需要建一个索引。<br>2）宁缺勿滥。认为索引会消耗空间、严重拖慢更新和新增速度。<br>3）抵制惟一索引。认为业务的惟一性一律需要在应用层通过“先查后插”方式解决。<br></code></pre></td></tr></table></figure></li>
+</ul>
 
                 
               </div>
@@ -308,7 +339,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  <a href="/categories/Mysql/" class="category-chain-item">Mysql</a>
   
   
 
@@ -323,7 +354,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/redis-cluster/">#redis cluster</a>
+        <a href="/tags/Mysql/">#Mysql</a>
       
     </div>
   
@@ -335,8 +366,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Redis Cluster detail</div>
-      <div>https://jiuyetx.github.io/2023/07/22/Redis-Cluster-detail/</div>
+      <div>Mysql 索引规约</div>
+      <div>https://jiuyetx.github.io/2023/08/03/mysql-index-Protocol/</div>
     </div>
     <div class="license-meta">
       
@@ -348,7 +379,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年7月22日</div>
+          <div>2023年8月3日</div>
         </div>
       
       
@@ -378,18 +409,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/07/22/Java-keyword-volatile/" title="Java keyword volatile">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Java keyword volatile</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/07/22/Redis-Cluster-solution/" title="Redis Cluster solution">
-                        <span class="hidden-mobile">Redis Cluster solution</span>
+                      <a href="/2023/07/27/new-spring-boot-starter/" title="如何自己写一个Spring Boot starter">
+                        <span class="hidden-mobile">如何自己写一个Spring Boot starter</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
