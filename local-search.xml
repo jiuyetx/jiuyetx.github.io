@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>当任务数超过线程池的核心线程数时，如何不让它不进入队列，而是直接启用最大线程数</title>
+    <link href="/2023/08/09/SynchronousQueue-use/"/>
+    <url>/2023/08/09/SynchronousQueue-use/</url>
+    
+    <content type="html"><![CDATA[<p>当我们提交一个任务到线程池的时候，它的工作原理分为四步。</p><ul><li>第一步，预热核心线程</li><li>第二步，把任务添加到阻塞队列</li><li>第三步，如果添加到阻塞队列失败，则创建非核心线程增加处理效率</li><li>第四步，如果非核心线程达到了阀值，就触发拒绝策略</li></ul><p>所以，如果希望这个任务不进入队列，那么只需要去影响第二步的执行逻辑就行了。</p><p>Java中线程池提供的构造方法里面，有一个参数可以修改阻塞队列的类型。</p><p>其中，就有一个阻塞队列叫SynchronousQueue，这个队列不能存储任务元素。它的特性是，每生产一个任务，就必须要指派一个消费者来处理，否则就会阻塞生产者。</p><p>基于这个特性，只要把线程池的阻塞队列替换成SynchronousQueue。就能够避免任务进入到阻塞队列，而是直接启动最大的线程数去处理这个任务。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>SynchronousQueue</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>SynchronousQueue</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Mysql 索引规约</title>
     <link href="/2023/08/03/mysql-index-Protocol/"/>
     <url>/2023/08/03/mysql-index-Protocol/</url>
