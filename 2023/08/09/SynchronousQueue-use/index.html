@@ -24,7 +24,7 @@
 <meta property="og:description" content="当我们提交一个任务到线程池的时候，它的工作原理分为四步。  第一步，预热核心线程 第二步，把任务添加到阻塞队列 第三步，如果添加到阻塞队列失败，则创建非核心线程增加处理效率 第四步，如果非核心线程达到了阀值，就触发拒绝策略  所以，如果希望这个任务不进入队列，那么只需要去影响第二步的执行逻辑就行了。 Java中线程池提供的构造方法里面，有一个参数可以修改阻塞队列的类型。 其中，就有一个阻塞队列叫S">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-08-09T19:58:52.000Z">
-<meta property="article:modified_time" content="2023-08-09T13:02:47.876Z">
+<meta property="article:modified_time" content="2023-08-09T13:06:35.989Z">
 <meta property="article:author" content="jiuyetx">
 <meta property="article:tag" content="SynchronousQueue">
 <meta name="twitter:card" content="summary_large_image">
@@ -128,18 +128,6 @@
               <a class="nav-link" href="/archives/">
                 <i class="iconfont icon-archive-fill"></i>
                 归档
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/">
-                <i class="iconfont icon-category-fill"></i>
-                分类
               </a>
             </li>
           

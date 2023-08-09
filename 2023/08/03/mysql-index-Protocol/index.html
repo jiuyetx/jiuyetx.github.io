@@ -24,7 +24,7 @@
 <meta property="og:description" content="【强制】业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引。  说明：不要以为唯一索引影响了insert速度，这个速度损耗可以忽略，但提高查找速度是明显的；另外，即使在应用层做了非常完善的校验控制，只要没有唯一索引，根据墨菲定律，必然有脏数据产生。  【强制】三个表以上禁止join。需要join的字段，数据类型必须绝对一致；多表关联查询时，保证被关联的字段需要有索引。  说明：即">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-08-03T15:48:02.000Z">
-<meta property="article:modified_time" content="2023-08-09T13:02:47.876Z">
+<meta property="article:modified_time" content="2023-08-09T13:06:35.989Z">
 <meta property="article:author" content="jiuyetx">
 <meta property="article:tag" content="Mysql">
 <meta name="twitter:card" content="summary_large_image">
@@ -128,18 +128,6 @@
               <a class="nav-link" href="/archives/">
                 <i class="iconfont icon-archive-fill"></i>
                 归档
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/">
-                <i class="iconfont icon-category-fill"></i>
-                分类
               </a>
             </li>
           

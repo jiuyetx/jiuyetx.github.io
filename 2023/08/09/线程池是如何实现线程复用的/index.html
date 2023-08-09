@@ -24,7 +24,7 @@
 <meta property="og:description" content="线程池里面采用了生产者消费者的模式，来实现线程复用。 生产者消费者模型，其实就是通过一个中间容器来解耦生产者和消费者的任务处理过程。 生产者不断生产任务保存到容器，消费者不断从容器中消费任务。 在线程池里面，因为需要保证工作线程的重复使用，并且这些线程应该是有任务的时候执行，没有任务的时候等待并释放CPU资源。因此，它使用了阻塞队列来实现这样一个需求。 提交任务到线程池里面的线程称为生产者线程，它">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-08-09T20:53:06.000Z">
-<meta property="article:modified_time" content="2023-08-09T13:02:47.876Z">
+<meta property="article:modified_time" content="2023-08-09T13:06:35.989Z">
 <meta property="article:author" content="jiuyetx">
 <meta property="article:tag" content="线程池">
 <meta property="article:tag" content="线程复用">
@@ -129,18 +129,6 @@
               <a class="nav-link" href="/archives/">
                 <i class="iconfont icon-archive-fill"></i>
                 归档
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/">
-                <i class="iconfont icon-category-fill"></i>
-                分类
               </a>
             </li>
           
