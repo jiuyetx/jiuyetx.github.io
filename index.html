@@ -223,6 +223,111 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/08/09/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%A4%8D%E7%94%A8%E7%9A%84/" target="_self">
+          线程池是如何实现线程复用的?
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/09/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%A4%8D%E7%94%A8%E7%9A%84/" target="_self">
+        <div>
+          线程池里面采用了生产者消费者的模式，来实现线程复用。 生产者消费者模型，其实就是通过一个中间容器来解耦生产者和消费者的任务处理过程。 生产者不断生产任务保存到容器，消费者不断从容器中消费任务。 在线程池里面，因为需要保证工作线程的重复使用，并且这些线程应该是有任务的时候执行，没有任务的时候等待并释放CPU资源。因此，它使用了阻塞队列来实现这样一个需求。 提交任务到线程池里面的线程称为生产者线程，它
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-09 20:53" pubdate>
+              2023-08-09
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/">#线程池</a>
+            
+              <a href="/tags/%E7%BA%BF%E7%A8%8B%E5%A4%8D%E7%94%A8/">#线程复用</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/08/09/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E5%BC%82%E6%AD%A5%E6%B6%88%E8%B4%B9%E6%80%8E%E4%B9%88%E4%BF%9D%E6%8C%81%E9%A1%BA%E5%BA%8F/" target="_self">
+          阻塞队列异步消费怎么保持顺序
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/09/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E5%BC%82%E6%AD%A5%E6%B6%88%E8%B4%B9%E6%80%8E%E4%B9%88%E4%BF%9D%E6%8C%81%E9%A1%BA%E5%BA%8F/" target="_self">
+        <div>
+          这个问题需要从三个方面来回答。 首先，阻塞队列本身是符合FIFO特性的队列，也就是存储进去的元素符合先进先出的规则。 其次，在阻塞队列里面，使用condition条件等待来维护了两个等待队列，一个是队列为空的时候存储被阻塞的消费者，另一个是队列满了的时候存储被阻塞的生产者并且存储在等待队列里面的线程，都符合FIFO的特性。 最后，对于阻塞队列的消费过程，有两种情况。  第一种，就是阻塞队列里面已经
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-09 20:26" pubdate>
+              2023-08-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97/" class="category-chain-item">阻塞队列</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%BC%82%E6%AD%A5%E6%B6%88%E8%B4%B9/">#异步消费</a>
+            
+              <a href="/tags/%E4%BF%9D%E6%8C%81%E9%A1%BA%E5%BA%8F/">#保持顺序</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/08/09/SynchronousQueue-use/" target="_self">
           当任务数超过线程池的核心线程数时，如何不让它不进入队列，而是直接启用最大线程数
         </a>
@@ -698,132 +803,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/cluster/">#cluster</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/07/22/Dubbo-Knowledge-points/" target="_self">
-          Dubbo Knowledge points
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/07/22/Dubbo-Knowledge-points/" target="_self">
-        <div>
-          背景Dubbo知识点整理 Dubbo 知识点Dubbo是一款高性能的分布式服务框架，由阿里巴巴开源，用于解决分布式系统中的服务治理问题。下面是Dubbo的一些重要知识点： 1. Dubbo 简介Dubbo是一款开源的高性能、轻量级的分布式服务框架，它提供了服务注册、发现、远程调用、负载均衡等分布式服务治理功能，使得分布式系统开发更加简单和高效。 2. Dubbo 核心概念 服务提供者(Provid
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-07-22 15:27" pubdate>
-              2023-07-22
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Dubbo/" class="category-chain-item">Dubbo</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Dubbo/">#Dubbo</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/02/27/how-to-use-jad/" target="_self">
-          use jad in Linux
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/02/27/how-to-use-jad/" target="_self">
-        <div>
-          背景修复工单，本地调试OK，初步排查是线上版本部署代码不是最新的，登录docker后，找到jar文件并解压得到class文件 Show Code123wget https:&#x2F;&#x2F;www.benf.org&#x2F;other&#x2F;cfr&#x2F;cfr-0.144.jarjava -jar cfr-0.144.jar your_class.class &gt; out.java
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-02-27 19:07" pubdate>
-              2023-02-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Java/" class="category-chain-item">Java</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Linux/">#Linux</a>
-            
-              <a href="/tags/jad/">#jad</a>
-            
-              <a href="/tags/%E5%8F%8D%E7%BC%96%E8%AF%91/">#反编译</a>
             
           </div>
         

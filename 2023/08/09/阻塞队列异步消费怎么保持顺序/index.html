@@ -16,24 +16,23 @@
   <meta name="author" content="jiuyetx">
   <meta name="keywords" content="">
   
-    <meta name="description" content="利用invoke,CompletableFuture,ScheduledExecutorService实现批处理接口，并支持超时处理">
+    <meta name="description" content="这个问题需要从三个方面来回答。 首先，阻塞队列本身是符合FIFO特性的队列，也就是存储进去的元素符合先进先出的规则。 其次，在阻塞队列里面，使用condition条件等待来维护了两个等待队列，一个是队列为空的时候存储被阻塞的消费者，另一个是队列满了的时候存储被阻塞的生产者并且存储在等待队列里面的线程，都符合FIFO的特性。 最后，对于阻塞队列的消费过程，有两种情况。  第一种，就是阻塞队列里面已经">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout">
-<meta property="og:url" content="https://jiuyetx.github.io/2022/08/07/CompletableFuture-timeout-code/index.html">
+<meta property="og:title" content="阻塞队列异步消费怎么保持顺序">
+<meta property="og:url" content="https://jiuyetx.github.io/2023/08/09/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E5%BC%82%E6%AD%A5%E6%B6%88%E8%B4%B9%E6%80%8E%E4%B9%88%E4%BF%9D%E6%8C%81%E9%A1%BA%E5%BA%8F/index.html">
 <meta property="og:site_name" content="jiuyetx">
-<meta property="og:description" content="利用invoke,CompletableFuture,ScheduledExecutorService实现批处理接口，并支持超时处理">
+<meta property="og:description" content="这个问题需要从三个方面来回答。 首先，阻塞队列本身是符合FIFO特性的队列，也就是存储进去的元素符合先进先出的规则。 其次，在阻塞队列里面，使用condition条件等待来维护了两个等待队列，一个是队列为空的时候存储被阻塞的消费者，另一个是队列满了的时候存储被阻塞的生产者并且存储在等待队列里面的线程，都符合FIFO的特性。 最后，对于阻塞队列的消费过程，有两种情况。  第一种，就是阻塞队列里面已经">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-08-07T13:53:00.000Z">
+<meta property="article:published_time" content="2023-08-09T20:26:22.000Z">
 <meta property="article:modified_time" content="2023-08-09T13:02:47.876Z">
 <meta property="article:author" content="jiuyetx">
-<meta property="article:tag" content="反射">
-<meta property="article:tag" content="多线程">
-<meta property="article:tag" content="线程池">
+<meta property="article:tag" content="异步消费">
+<meta property="article:tag" content="保持顺序">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout - jiuyetx</title>
+  <title>阻塞队列异步消费怎么保持顺序 - jiuyetx</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout"></span>
+            <span id="subtitle" data-typed-text="阻塞队列异步消费怎么保持顺序"></span>
           
         </div>
 
@@ -209,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-08-07 13:53" pubdate>
-          2022年8月7日 下午
+        <time datetime="2023-08-09 20:26" pubdate>
+          2023年8月9日 晚上
         </time>
       </span>
     
@@ -221,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.2k 字
+          395 字
         
       </span>
     
@@ -232,7 +231,7 @@
         
         
         
-          27 分钟
+          4 分钟
         
       </span>
     
@@ -270,18 +269,18 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout</h1>
+            <h1 style="display: none">阻塞队列异步消费怎么保持顺序</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>需要实现一个接口返回多个接口方法的数据，通过请求参数反射调用接口方法，如果接口方法超时，则返回默认值。<br>使用completableFuture，可以实现异步超时， jdk9已经有原生的实现，但是在jdk8需要自己做类似下面的实现, 需要利用applyToEigther的特性。</p>
-<h2 id="Show-Code"><a href="#Show-Code" class="headerlink" title="Show Code"></a>Show Code</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">ScheduledExecutorService</span> <span class="hljs-variable">scheduler</span> <span class="hljs-operator">=</span> ExecutorsManager.getInstance().getScheduledExecutorService();<br><br><span class="hljs-keyword">public</span> BatchResponeVo <span class="hljs-title function_">batch</span><span class="hljs-params">(BatchRequestDto batchRequestDto)</span> <span class="hljs-keyword">throws</span> ExecutionException, InterruptedException &#123;<br><br>    List&lt;CompletableFuture&lt;BatchResponeVo&gt;&gt; futuresList = Lists.newLinkedList();<br><br>    batchRequestDto.forEach((k, v) -&gt; &#123;<br>        <span class="hljs-type">BatchUriParamDto</span> <span class="hljs-variable">req</span> <span class="hljs-operator">=</span> JsonUtil.parseJsonUseJackson(JsonUtil.toJsonUseJackson(v), BatchUriParamDto.class);<br>        Map&lt;?, ?&gt; param = Objects.requireNonNull(req).getParam();<br>        <span class="hljs-type">String</span> <span class="hljs-variable">uri</span> <span class="hljs-operator">=</span> req.getUri();<br><br>        <span class="hljs-type">BatchServiceEnum</span> <span class="hljs-variable">serviceEnum</span> <span class="hljs-operator">=</span> BatchServiceEnum.getEnumByServiceAndMethod(uri);<br>        CompletableFuture&lt;BatchResponeVo&gt; query = CompletableFuture.supplyAsync(() -&gt; &#123;<br>            <span class="hljs-type">BatchResponeVo</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>();<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">if</span> (Objects.isNull(serviceEnum)) &#123;<br>                    result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, <span class="hljs-string">&quot;not required service method&quot;</span>, <span class="hljs-literal">null</span>));<br>                    <span class="hljs-keyword">return</span> result;<br>                &#125;<br><br>                Class&lt;?&gt; serviceClass = Class.forName(serviceEnum.getService());<br>                Class&lt;?&gt; paramClass = Class.forName(serviceEnum.getParam());<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> serviceClass.getMethod(serviceEnum.getMethod(), paramClass);<br><br>                <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> JsonUtil.parseJsonUseJackson(JsonUtil.toJsonUseJackson(param), paramClass);<br>                <span class="hljs-type">Object</span> <span class="hljs-variable">bean</span> <span class="hljs-operator">=</span> SpringUtil.getBean(serviceClass);<br>                <span class="hljs-type">Object</span> <span class="hljs-variable">invoke</span> <span class="hljs-operator">=</span> method.invoke(bean, obj);<br>                result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;ok&quot;</span>, <span class="hljs-literal">null</span>, invoke));<br>                <span class="hljs-keyword">return</span> result;<br>            &#125; <span class="hljs-keyword">catch</span> (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |<br>                     IllegalAccessException e) &#123;<br>                log.error(<span class="hljs-string">&quot;ObservabilityService batch method error msg:&#123;&#125;&quot;</span>, e.getMessage(), e);<br>                result.put(k, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, e.getCause().getMessage(), <span class="hljs-literal">null</span>));<br>                <span class="hljs-keyword">return</span> result;<br>            &#125;<br>        &#125;, scheduler);<br><br>        <span class="hljs-keyword">final</span> CompletableFuture&lt;BatchResponeVo&gt; chains = within(query, Duration.ofSeconds(<span class="hljs-number">10</span>), k);<br>        futuresList.add(chains);<br>    &#125;);<br>    CompletableFuture&lt;Void&gt; allCompletableFuture = CompletableFuture.allOf(futuresList.toArray(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CompletableFuture</span>[<span class="hljs-number">0</span>]));<br><br>    <span class="hljs-type">BatchResponeVo</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>();<br>    allCompletableFuture.thenApply(v -&gt; futuresList.stream().map(CompletableFuture::join).collect(Collectors.toList()))<br>            .get()<br>            .forEach(result::putAll);<br>    <span class="hljs-keyword">return</span> result;<br>&#125;<br><br><span class="hljs-keyword">public</span> CompletableFuture&lt;BatchResponeVo&gt; <span class="hljs-title function_">failAfter</span><span class="hljs-params">(Duration duration, String key)</span>&#123;<br>    <span class="hljs-comment">/// need a schedular executor</span><br>    <span class="hljs-keyword">final</span> CompletableFuture&lt;BatchResponeVo&gt; timer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CompletableFuture</span>&lt;&gt;();<br>    scheduler.schedule(()-&gt; timer.complete(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchResponeVo</span>() &#123;&#123;<br>        put(key, <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchDataVo</span>(<span class="hljs-string">&quot;SystemError&quot;</span>, <span class="hljs-string">&quot;method excute timeout &quot;</span>+duration.get(SECONDS)+<span class="hljs-string">&quot;s&quot;</span>, <span class="hljs-literal">null</span>));<br>    &#125;&#125;),duration.toMillis(), TimeUnit.MILLISECONDS);<br>    <span class="hljs-keyword">return</span> timer;<br>&#125;<br><br><span class="hljs-keyword">public</span> CompletableFuture&lt;BatchResponeVo&gt; <span class="hljs-title function_">within</span><span class="hljs-params">(CompletableFuture&lt;BatchResponeVo&gt; taskFuture, Duration duration, String key)</span>&#123;<br>    CompletableFuture&lt;BatchResponeVo&gt; timeoutWatcher = failAfter(duration, key);<br>    <span class="hljs-keyword">return</span> taskFuture.applyToEither(timeoutWatcher, Function.identity());<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650">使用CompletableFuture</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1264803678201760">反射调用方法</a></li>
-<li><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/200625">Java中使用CompletableFuture处理异步超时</a></li>
+                <p>这个问题需要从三个方面来回答。</p>
+<p>首先，阻塞队列本身是符合FIFO特性的队列，也就是存储进去的元素符合先进先出的规则。</p>
+<p>其次，在阻塞队列里面，使用condition条件等待来维护了两个等待队列，一个是队列为空的时候存储被阻塞的消费者，另一个是队列满了的时候存储被阻塞的生产者并且存储在等待队列里面的线程，都符合FIFO的特性。</p>
+<p>最后，对于阻塞队列的消费过程，有两种情况。</p>
+<ul>
+<li>第一种，就是阻塞队列里面已经包含了很多任务，这个时候启动多个消费者去消费的时候，它的有序性保证是通过加锁来实现的，也就是每个消费者线程去阻塞队列获取任务的时候必须要先获取排它锁。</li>
+<li>第二种，如果有多个消费者线程因为阻塞队列中没有任务而阻塞，这个时候这些线程是按照FIFO的顺序存储到condition条件等待队列中的，当阻塞队列中开始有任务要处理的时候，这些被阻塞的消费者线程会严格按照FIFO的顺序来唤醒，从而保证了消费的顺序性。</li>
 </ul>
 
                 
@@ -301,7 +300,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  <a href="/categories/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97/" class="category-chain-item">阻塞队列</a>
   
   
 
@@ -316,11 +315,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8F%8D%E5%B0%84/">#反射</a>
+        <a href="/tags/%E5%BC%82%E6%AD%A5%E6%B6%88%E8%B4%B9/">#异步消费</a>
       
-        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">#多线程</a>
-      
-        <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/">#线程池</a>
+        <a href="/tags/%E4%BF%9D%E6%8C%81%E9%A1%BA%E5%BA%8F/">#保持顺序</a>
       
     </div>
   
@@ -332,8 +329,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CompletableFuture &amp;&amp; ScheduledExecutorService handle timeout</div>
-      <div>https://jiuyetx.github.io/2022/08/07/CompletableFuture-timeout-code/</div>
+      <div>阻塞队列异步消费怎么保持顺序</div>
+      <div>https://jiuyetx.github.io/2023/08/09/阻塞队列异步消费怎么保持顺序/</div>
     </div>
     <div class="license-meta">
       
@@ -345,7 +342,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年8月7日</div>
+          <div>2023年8月9日</div>
         </div>
       
       
@@ -375,15 +372,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/02/27/how-to-use-jad/" title="use jad in Linux">
+                      <a href="/2023/08/09/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%A4%8D%E7%94%A8%E7%9A%84/" title="线程池是如何实现线程复用的?">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">use jad in Linux</span>
+                        <span class="hidden-mobile">线程池是如何实现线程复用的?</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2023/08/09/SynchronousQueue-use/" title="当任务数超过线程池的核心线程数时，如何不让它不进入队列，而是直接启用最大线程数">
+                        <span class="hidden-mobile">当任务数超过线程池的核心线程数时，如何不让它不进入队列，而是直接启用最大线程数</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
